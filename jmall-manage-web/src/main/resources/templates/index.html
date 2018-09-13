@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>后台管理系统</title>
+    <!--导入easyUI的包-->
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/easyui/easyloader.js"></script>
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css"  href="/easyui/themes/default/easyui.css">
+</head>
+<body class="easyui-layout">
+    <div data-options="region:'north',title:'顶部',split:true" style="height:100px;">
+        <h1>后台管理系统</h1>
+    </div>
+    <div data-options="region:'west',title:'左部',split:true" style="width:20%;">
+        <div class="easyui-accordion" style="overflow:auto;">
+            <div title="基本信息管理" data-options="selected:true" style="overflow:auto;">
+                <ul class="nav">
+                    <!--使用js添加一个控制器 -->
+                    <li><a href="javascript:add_tab('平台属性管理', 'attrListPage')" style="text-decoration:none;">平台属性管理</a></li>
+                </ul>
+            </div>
+            <div title="Title2">
+                content2
+            </div>
+            <div title="Title3">
+                content3
+            </div>
+        </div>
+    </div>
+    <div data-options="region:'center',title:'正文'" style="padding:5px;background:#eee;width:80%;">
+        <div id="tt" class="easyui-tabs" style="width:100%;height:100%;" >
+        </div>
+    </div>
+</body>
+
+<script type="text/javascript">
+    function add_tab(title, url) {
+        // 此函数的参数是标题，url，这个函数就是跳转到这个url的控制器，返回一个页面在正文中显示
+        // 点击在左边会添加一个选项卡，如果选项卡已打开，点击时还是同一个tab不变
+
+        // 1. 判断title是否已经存在，已经存在则说明代开的是当前选项卡
+        if($('#tt').tabs('exists', title)){
+            $('#tt').tabs('select', title);
+        }else {
+            // 2.不存在则需要添加一个控制器打开，url就是我么得控制器
+            $('#tt').tabs('add',{
+                title:title,
+                closable:true,
+                // 注意：这里跳转是href不是url：
+                href:url
+            });
+        }
+    }
+</script>
+</html>

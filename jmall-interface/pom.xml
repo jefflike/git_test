@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--存放service模块，为利于维护，具体的mapper放到相关的service模块管理，不放到此处-->
+    <parent>
+        <artifactId>jmall-parent</artifactId>
+        <groupId>com.jeff_code.jmall</groupId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../jmall-parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>jmall-interface</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.jeff_code.jmall</groupId>
+            <artifactId>jmall-bean</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+</project>
