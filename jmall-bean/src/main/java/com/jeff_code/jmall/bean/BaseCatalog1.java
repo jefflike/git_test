@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @describe:
  */
 public class BaseCatalog1 implements Serializable {
+
     @Id
     @Column
     private String id;

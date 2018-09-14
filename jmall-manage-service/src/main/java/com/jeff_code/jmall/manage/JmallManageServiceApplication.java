@@ -2,13 +2,13 @@ package com.jeff_code.jmall.manage;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages ="com.jeff_code.jmall")
-public class JmallManageWebApplication {
+@MapperScan(basePackages = "com.jeff_code.jmall.manage.mapper")
+public class JmallManageServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JmallManageWebApplication.class, args);
+        SpringApplication.run(JmallManageServiceApplication.class, args);
     }
 }

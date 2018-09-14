@@ -9,14 +9,14 @@ import java.io.Serializable;
  * @create: 2018/9/13
  * @describe:
  */
-public class BaseCatalog2 implements Serializable {
+public class BaseCatalog3 implements Serializable {
     @Id
     @Column
     private String id;
     @Column
     private String name;
     @Column
-    private String catalog1Id;
+    private String catalog2Id;
 
     public String getId() {
         return id;
@@ -34,12 +34,12 @@ public class BaseCatalog2 implements Serializable {
         this.name = name;
     }
 
-    public String getCatalog1Id() {
-        return catalog1Id;
+    public String getCatalog2Id() {
+        return catalog2Id;
     }
 
-    public void setCatalog1Id(String catalog1Id) {
-        this.catalog1Id = catalog1Id;
+    public void setCatalog2Id(String catalog2Id) {
+        this.catalog2Id = catalog2Id;
     }
 }
 

@@ -1,2 +1,7 @@
+com\jeff_code\jmall\bean\BaseCatalog2.class
+com\jeff_code\jmall\bean\BaseAttrInfo.class
 com\jeff_code\jmall\bean\UserInfo.class
 com\jeff_code\jmall\bean\UserAddress.class
+com\jeff_code\jmall\bean\BaseCatalog1.class
+com\jeff_code\jmall\bean\BaseAttrValue.class
+com\jeff_code\jmall\bean\BaseCatalog3.class
