@@ -30,6 +30,9 @@ public class ManageServiceImpl implements IManageService {
     @Autowired
     private BaseAttrValueMapper baseAttrValueMapper;
 
+    @Autowired
+    private SpuInfoMapper spuInfoMapper;
+
     @Override
     public List<BaseCatalog1> getCatalog1() {
         return baseCatalog1Mapper.selectAll();
@@ -116,5 +119,9 @@ public class ManageServiceImpl implements IManageService {
         // 给属性对象中的属性值集合赋值
         attrInfo.setAttrValueList(attrValueList);
         return attrInfo;
+    }
+
+    public List<SpuInfo> getSpuInfoList(SpuInfo spuInfo){
+        return spuInfoMapper.select(spuInfo);
     }
 }

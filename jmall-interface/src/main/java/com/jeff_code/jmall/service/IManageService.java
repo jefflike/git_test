@@ -1,9 +1,6 @@
 package com.jeff_code.jmall.service;
 
-import com.jeff_code.jmall.bean.BaseAttrInfo;
-import com.jeff_code.jmall.bean.BaseCatalog1;
-import com.jeff_code.jmall.bean.BaseCatalog2;
-import com.jeff_code.jmall.bean.BaseCatalog3;
+import com.jeff_code.jmall.bean.*;
 
 import java.util.List;
 
@@ -24,4 +21,6 @@ public interface IManageService {
     void saveAttrInfo(BaseAttrInfo baseAttrInfo);
 
     BaseAttrInfo getAttrInfo(String attrId);
+
+    List<SpuInfo> getSpuInfoList(SpuInfo spuInfo);
 }

@@ -9,6 +9,13 @@
     <script type="text/javascript" src="/easyui/easyloader.js"></script>
     <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
     <link rel="stylesheet" type="text/css"  href="/easyui/themes/default/easyui.css">
+
+    <!--引入图片上传工具webuploader-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+
+    <!--查看图片详情-->
+    <script type="text/javascript" src="/easyui/datagrid-detailview.js"></script>
 </head>
 <body class="easyui-layout">
     <div data-options="region:'north',title:'顶部',split:true" style="height:100px;">
@@ -22,8 +29,10 @@
                     <li><a href="javascript:add_tab('平台属性管理', 'attrListPage')" style="text-decoration:none;">平台属性管理</a></li>
                 </ul>
             </div>
-            <div title="Title2">
-                content2
+            <div title="Spu属性管理">
+                <ul class="nav">
+                    <li><a href="javascript:add_tab('Spu属性管理', 'spuListPage')" style="text-decoration:none;">Spu属性管理</a></li>
+                </ul>
             </div>
             <div title="Title3">
                 content3
