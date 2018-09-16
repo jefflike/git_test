@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <!--<div th:include="spuSaleAttrPage"></div>-->
+        <div th:include="spuSaleAttrPage"></div>
 
     </form>
 </div>
@@ -142,7 +142,6 @@
         });
     }
 
-
     // 上传：百度的
     function initUploader(){
         console.log("初始化上传控件");
@@ -203,7 +202,6 @@
                     row:{imgUrl:response._raw}
                 });
         });
-
         /**/
         $('#spuImgUploadBtn').click(function(){
             console.log("开始上传");
@@ -228,7 +226,66 @@
             ]]
         });
     }
+    
+    function addSpuSaleAttr() {
+        initSpuSaleAttrDlg();
+    }
+    
+    function editSpuSaleAttr() {
+        var spuId= $("#spuId").val();
+        var spuSaleAttr = $('#spuSaleAttrDg').datagrid('getSelected');
+        initSpuSaleAttrDlg(spuId,spuSaleAttr);
+    }
 
+    function saveSpu() {
+        // 封装spuInfo，这是一个两层多对多的对象，封装成json返回后端处理
+        var spuInfo = {};
+        // 封装基础属性 id spuName  description  catalog3Id
+        spuInfo["id"] = $("#spuId").val();
+        spuInfo["spuName"] = $("#spuName").val();
+        spuInfo["description"] = $("#description").val();
+        // 从模态框底层获取到
+        spuInfo["catalog3Id"] = $("#ctg3ForSpuList").combobox('getValue');
+
+        // 获取销售属性数据
+        var spuSaleAttrDgRows = $("#spuSaleAttrDg").datagrid('getRows');
+        for (var i = 0; i < spuSaleAttrDgRows.length; i++) {
+            var spuSaleAttrDgRow = spuSaleAttrDgRows[i];
+            spuInfo["spuSaleAttrList["+i+"].id"]=spuSaleAttrDgRow.id; // 实体类没有获取主键自增。重新赋值
+            spuInfo["spuSaleAttrList["+i+"].saleAttrId"]=spuSaleAttrDgRow.saleAttrId;
+            spuInfo["spuSaleAttrList["+i+"].saleAttrName"]=spuSaleAttrDgRow.saleAttrName;
+
+            // 销售属性值！ 在销售属性dg中field = spuSaleAttrValueJson 这个属性是暂存的属性
+            var saleAttrValueRows = spuSaleAttrDgRows[i].spuSaleAttrValueJson.rows;
+            for (var j = 0; j < saleAttrValueRows.length; j++) {
+                var saleAttrValueRow = saleAttrValueRows[j];
+                spuInfo["spuSaleAttrList["+i+"].spuSaleAttrValueList["+j+"].id"]=saleAttrValueRow.id; // 实体类没有获取主键自增。重新赋值
+                spuInfo["spuSaleAttrList["+i+"].spuSaleAttrValueList["+j+"].saleAttrId"]=spuSaleAttrDgRow.saleAttrId;
+                spuInfo["spuSaleAttrList["+i+"].spuSaleAttrValueList["+j+"].saleAttrValueName"]=saleAttrValueRow.saleAttrValueName;
+            }
+        }
+
+        // 封装spuImageList
+        // 先获取到当前的图片集合数据
+        var spuImgDgRows  = $("#spuImgDg").datagrid('getRows');
+
+        // id spuId imgName imgUrl 其中id ：自动增长，spuId ：是spuInfo.id
+        for (var i = 0; i < spuImgDgRows.length; i++) {
+            var spuImgDgRows = spuImgDgRows[i];
+            spuInfo["spuImageList[" + i + "].imgName"] = spuImgDgRows.imgName;
+            spuInfo["spuImageList[" + i + "].imgUrl"] = spuImgDgRows.imgUrl;
+        }
+
+        console.log(JSON.stringify(spuInfo));
+
+        // 保存
+        $.post("saveSpuInfo",spuInfo,function (data) {
+            // 关闭对话框
+            $("#spu_dlg").dialog("close");
+            // 重新加载dg的数据
+            $("#spulist_dg").datagrid("reload");
+        })
+    }
 </script>
 </body>
 </html>

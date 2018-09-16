@@ -23,4 +23,9 @@ public interface IManageService {
     BaseAttrInfo getAttrInfo(String attrId);
 
     List<SpuInfo> getSpuInfoList(SpuInfo spuInfo);
+
+    // 查询所有的销售属性
+    List<BaseSaleAttr> getBaseSaleAttrList();
+
+    void saveSpuInfo(SpuInfo spuInfo);
 }
