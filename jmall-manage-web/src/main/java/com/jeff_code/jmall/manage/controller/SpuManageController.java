@@ -2,6 +2,7 @@ package com.jeff_code.jmall.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.jeff_code.jmall.bean.BaseSaleAttr;
+import com.jeff_code.jmall.bean.SpuImage;
 import com.jeff_code.jmall.bean.SpuInfo;
 import com.jeff_code.jmall.service.IManageService;
 import org.springframework.stereotype.Controller;
@@ -48,5 +49,11 @@ public class SpuManageController {
         // 保存
         iManageService.saveSpuInfo(spuInfo);
         return "success";
+    }
+
+    @ResponseBody
+    @RequestMapping("spuImageList")
+    public List<SpuImage> spuImageList(String spuId){
+        return iManageService.getSpuImageList(spuId);
     }
 }

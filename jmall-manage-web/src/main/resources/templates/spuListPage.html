@@ -61,9 +61,19 @@
 </div>
     <!--引入spuInfoPage 页面 th:include:语法属于Thymeleaf。-->
 <div th:include="spuInfoPage"></div>
+
+<!--引入skuInfoPage -->
+<div th:include="skuInfoPage"></div>
 </body>
 <script type="text/javascript">
     function addSpuInfo() {
         initSpuInfoDlg();  //在spuInfoPage.html中
+    }
+    
+    function addSkuInfo() {
+        var spuRow = $('#spulist_dg').datagrid('getSelected');
+        var ctg3val=$("#ctg3ForSpuList").combobox('getValue');
+        /*spuRow.id = spuId '':空对象  ctg3val：三级分类ID*/
+        initSkuInfoDlg(spuRow.id,'',ctg3val);//在skuInfoPage.html中
     }
 </script>

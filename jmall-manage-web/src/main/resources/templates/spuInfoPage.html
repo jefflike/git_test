@@ -271,9 +271,9 @@
 
         // id spuId imgName imgUrl 其中id ：自动增长，spuId ：是spuInfo.id
         for (var i = 0; i < spuImgDgRows.length; i++) {
-            var spuImgDgRows = spuImgDgRows[i];
-            spuInfo["spuImageList[" + i + "].imgName"] = spuImgDgRows.imgName;
-            spuInfo["spuImageList[" + i + "].imgUrl"] = spuImgDgRows.imgUrl;
+            var spuImgDgRow = spuImgDgRows[i];
+            spuInfo["spuImageList[" + i + "].imgName"] = spuImgDgRow.imgName;
+            spuInfo["spuImageList[" + i + "].imgUrl"] = spuImgDgRow.imgUrl;
         }
 
         console.log(JSON.stringify(spuInfo));

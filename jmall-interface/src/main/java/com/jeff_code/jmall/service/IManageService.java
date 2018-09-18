@@ -28,4 +28,11 @@ public interface IManageService {
     List<BaseSaleAttr> getBaseSaleAttrList();
 
     void saveSpuInfo(SpuInfo spuInfo);
+
+    List<SpuImage> getSpuImageList(String spuId);
+
+    List<SpuSaleAttr> getSpuSaleAttrList(String spuId);
+
+    // 保存skuInfo 对象
+    void saveSkuInfo(SkuInfo skuInfo);
 }
