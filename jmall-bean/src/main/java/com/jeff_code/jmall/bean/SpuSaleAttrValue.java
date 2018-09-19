@@ -2,6 +2,7 @@ package com.jeff_code.jmall.bean;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -22,6 +23,18 @@ public class SpuSaleAttrValue implements Serializable {
 
     @Column
     String saleAttrValueName;
+
+    // 来判断当前skuId 的属性值
+    @Transient
+    String isChecked;
+
+    public String getIsChecked() {
+        return isChecked;
+    }
+
+    public void setIsChecked(String isChecked) {
+        this.isChecked = isChecked;
+    }
 
     public String getId() {
         return id;

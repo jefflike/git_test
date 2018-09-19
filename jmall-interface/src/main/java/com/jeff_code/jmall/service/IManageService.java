@@ -35,4 +35,10 @@ public interface IManageService {
 
     // 保存skuInfo 对象
     void saveSkuInfo(SkuInfo skuInfo);
+
+    SkuInfo getSkuInfo(String skuId);
+
+    List<SpuSaleAttr> selectSpuSaleAttrListCheckBySku(SkuInfo skuInfo);
+
+    List<SkuSaleAttrValue> getSkuSaleAttrValueListBySpu(String spuId);
 }

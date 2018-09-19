@@ -9,4 +9,6 @@ import java.util.List;
 public interface SpuSaleAttrMapper extends Mapper<SpuSaleAttr> {
     // 根据spuId 查询销售属性列表
     List<SpuSaleAttr> selectSpuSaleAttrList(long spuId);
+
+    List<SpuSaleAttr> selectSpuSaleAttrListCheckBySku(long skuId, long spuId);
 }
