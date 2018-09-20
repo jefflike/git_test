@@ -33,6 +33,7 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!--引入jedis-->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>

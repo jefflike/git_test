@@ -115,13 +115,13 @@ public class ManageServiceImpl implements IManageService {
         }*/
         // baseAttrValue先清空再添加
         BaseAttrValue baseAttrValue = new BaseAttrValue();
-        // 更新之前先删除
+        // 更新之前先删除，此时因为baseAttrInfo的id有自增注解所以我们这个baseAttrInfo可以获得插入时的id
         baseAttrValue.setAttrId(baseAttrInfo.getId());
         baseAttrValueMapper.delete(baseAttrValue);
 
         List<BaseAttrValue> attrValueList = baseAttrInfo.getAttrValueList();
         // 当集合有值，循环遍历到
-        if (attrValueList.size() > 0 && attrValueList != null) {
+        if (attrValueList != null  && attrValueList.size() > 0) {
             for (BaseAttrValue attrValue : attrValueList) {
                 // 防止当前的id为"";
                 if (attrValue.getId() != null || attrValue.getId().length() == 0 ) {
