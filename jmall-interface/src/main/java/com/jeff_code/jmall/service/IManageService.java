@@ -41,4 +41,6 @@ public interface IManageService {
     List<SpuSaleAttr> selectSpuSaleAttrListCheckBySku(SkuInfo skuInfo);
 
     List<SkuSaleAttrValue> getSkuSaleAttrValueListBySpu(String spuId);
+
+    SkuInfo getSkuInfoDB(String skuId);
 }
