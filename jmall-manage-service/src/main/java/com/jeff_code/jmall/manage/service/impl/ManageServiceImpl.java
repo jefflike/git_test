@@ -318,7 +318,7 @@ public class ManageServiceImpl implements IManageService {
 //                此时redis没有这个数据
                 System.out.println("没有命中缓存！");
                 // 要从数据库中取得数据,准备一个锁
-                // set sku:33:info ok px 10000 nx
+                // set sku:33:info ok px 10000 nx,skuLockKey与skuInfoKey是一样的，锁住这个key就是为了只让一个从数据库中拿数据
                 String skuLockKey = ManageConst.SKUKEY_PREFIX+skuId+ManageConst.SKULOCK_SUFFIX;
                 // 执行这条命令
                 String lockKey   = jedis.set(skuLockKey, "OK", "NX", "PX", ManageConst.SKULOCK_EXPIRE_PX);

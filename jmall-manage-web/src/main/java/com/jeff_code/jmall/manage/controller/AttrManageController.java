@@ -3,6 +3,7 @@ package com.jeff_code.jmall.manage.controller;
 import com.alibaba.dubbo.config.annotation.Reference;
 import com.jeff_code.jmall.bean.BaseAttrInfo;
 import com.jeff_code.jmall.bean.BaseAttrValue;
+import com.jeff_code.jmall.bean.SkuInfo;
 import com.jeff_code.jmall.bean.SkuLsInfo;
 import com.jeff_code.jmall.service.IListService;
 import com.jeff_code.jmall.service.IManageService;
@@ -43,16 +44,17 @@ public class AttrManageController {
     }
 
     // 商品上架 根据商品id进行上架
-    // http://localhost:8082/onSale?skuId=33
+    // http://localhost:8082/onSale?skuId=35
     @RequestMapping("onSale")
     @ResponseBody
     public String onSale(String skuId){
         // 使用skuId查找到skuattrvalue
-        BaseAttrInfo attrInfo = iManageService.getAttrInfo(skuId);
+        SkuInfo skuInfo = iManageService.getSkuInfo(skuId);
 
         SkuLsInfo skuLsInfo = new SkuLsInfo();
         try {
-            BeanUtils.copyProperties(skuLsInfo, attrInfo);
+//            将skuInfo转给skuLSInfo上架
+            BeanUtils.copyProperties(skuLsInfo, skuInfo);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

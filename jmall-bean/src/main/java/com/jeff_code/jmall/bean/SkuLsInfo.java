@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 把es中所有的字段封装到skuLsInfo中
+ */
 public class SkuLsInfo implements Serializable{
 
     String id;

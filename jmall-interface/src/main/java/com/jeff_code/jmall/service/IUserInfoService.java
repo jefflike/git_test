@@ -15,4 +15,8 @@ public interface IUserInfoService {
     List<UserInfo> getAll();
 
     List<UserAddress> getAdressById(String userId);
+
+    UserInfo login(UserInfo userInfo);
+
+    UserInfo verify(String userId);
 }
