@@ -53,7 +53,7 @@ public class AttrManageController {
 
         SkuLsInfo skuLsInfo = new SkuLsInfo();
         try {
-//            将skuInfo转给skuLSInfo上架
+//            将skuInfo数据转给skuLSInfo上架
             BeanUtils.copyProperties(skuLsInfo, skuInfo);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
