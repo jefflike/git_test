@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.jeff_code.jmall.bean.SkuInfo;
 import com.jeff_code.jmall.bean.SkuSaleAttrValue;
 import com.jeff_code.jmall.bean.SpuSaleAttr;
+import com.jeff_code.jmall.config.LoginRequire;
 import com.jeff_code.jmall.service.IManageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ public class ItemController {
     private IManageService iManageService;
 
     @RequestMapping("{skuId}.html")
+    @LoginRequire
     public String skuInfoPage(@PathVariable String  skuId, HttpServletRequest request){
         // 第一步我们需要获取skuinfo的信息展示在页面上
         SkuInfo skuInfo = iManageService.getSkuInfo(skuId);

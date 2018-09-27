@@ -52,6 +52,7 @@ public class UserServiceImpl implements IUserInfoService {
     public UserInfo login(UserInfo userInfo) {
         // 1. 数据库中存的密码是加密过的，所以我们比对数据库也需要将前端传进来的页面进行加密
         String passwd = userInfo.getPasswd();
+        // 此处可以加盐确保安全
         String newPassword = DigestUtils.md5DigestAsHex(passwd.getBytes());
         userInfo.setPasswd(newPassword);
         UserInfo user = userInfoMapper.selectOne(userInfo);
@@ -63,6 +64,7 @@ public class UserServiceImpl implements IUserInfoService {
             // 设置到redis并且设置一个过期时间
             jedis.setex(userKey, userKey_timeOut, JSON.toJSONString(user));
         }
+        jedis.close();
         return user;
     }
 
@@ -73,11 +75,10 @@ public class UserServiceImpl implements IUserInfoService {
         Jedis jedis = redisUtil.getJedis();
         String userJson = jedis.get(userKey);
 
-        // 认证一次记得重置这个key的时间
-        jedis.expire(userKey, userKey_timeOut);
-
         if(userJson != null){
-            UserInfo map = JSON.parseObject(userId, UserInfo.class);
+            // 认证一次记得重置这个key的时间
+            jedis.expire(userKey, userKey_timeOut);
+            UserInfo map = JSON.parseObject(userJson, UserInfo.class);
             return map;
         }
         return null;

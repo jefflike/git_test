@@ -1,5 +1,6 @@
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseAttrValue.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseCatalog2.java
+E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuLsParams.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SpuSaleAttr.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SpuSaleAttrValue.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuAttrValue.java
@@ -9,8 +10,11 @@ E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseSaleAttr.
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuInfo.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseCatalog1.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseCatalog3.java
+E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuLsInfo.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SpuImage.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SpuInfo.java
+E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuLsAttrValue.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\BaseAttrInfo.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuImage.java
 E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\UserAddress.java
+E:\atguigu\jmall\jmall-bean\src\main\java\com\jeff_code\jmall\bean\SkuLsResult.java

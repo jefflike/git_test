@@ -52,12 +52,14 @@ public class PassportController {
 
             // 3. saltheader中获取当前服务器的ip地址
             // 要获取这个字段，nginx配置反向代理时需要配置proxy_set_header X-forwarded-for $proxy_add_x_forwarded_for，否则取到ip为null;
+//            String salt = request.getRemoteAddr();
             String salt = request.getHeader("X-forwarded-for");
 
             // 使用工具类生成token
             String token = JwtUtil.encode(signKey, map, salt);
             return token;
         }else {
+            // 没有查询到，返回一个失败
             return "fail";
         }
     }

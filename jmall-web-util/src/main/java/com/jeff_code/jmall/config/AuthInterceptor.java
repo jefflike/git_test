@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @Author: jefflike
  * @create: 2018/9/25
- * @describe: cookie保存token，或者token已经报错在cookie了
+ * @describe: cookie保存token，或者token已经保存在cookie了
  */
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
@@ -40,6 +40,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             token=CookieUtil.getCookieValue(request,"token",false);
         }
 
+        // 取出token中保存的用户信息，将信息回显到模块
         if (token!=null){
             // 通过Base64UrlCodec 进行解密
             Map map =  getUserMapByToken(token);
@@ -82,6 +83,11 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
+    /**
+     * 取出token中的用户的信息，封装到一个map里面
+     * @param token
+     * @return
+     */
     private Map getUserMapByToken(String token) {
         // 获取私钥
         // eyJhbGciOiJIUzI1NiJ9.eyJuaWNrTmFtZSI6IkFkbWluaXN0cmF0b3IiLCJ1c2VySWQiOiIyIn0.WUvbFvXQnTMBGNyHWT-DE41MR9cn7c_W1oAtDAzb7VU
