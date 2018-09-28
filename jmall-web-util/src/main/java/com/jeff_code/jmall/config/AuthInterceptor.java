@@ -37,6 +37,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
         // 不走登录，走其他控制器的时候，看cookie 中是否有值，如果有值，则赋给token。拿出私钥的信息回显页面
         if (token==null){
+
             token=CookieUtil.getCookieValue(request,"token",false);
         }
 

@@ -27,7 +27,7 @@ public class ItemController {
     private IManageService iManageService;
 
     @RequestMapping("{skuId}.html")
-    @LoginRequire
+//    @LoginRequire
     public String skuInfoPage(@PathVariable String  skuId, HttpServletRequest request){
         // 第一步我们需要获取skuinfo的信息展示在页面上
         SkuInfo skuInfo = iManageService.getSkuInfo(skuId);
