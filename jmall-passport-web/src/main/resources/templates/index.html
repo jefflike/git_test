@@ -94,15 +94,18 @@
 					err_img1.src='img/img11.png';
 					err_img2.src='img/img22.png';
 				}else{
-				    console.log("123123");
+				    // $("#loginForm").serialize()是获取到表单中的所有元素
                     $.post("/login",$("#loginForm").serialize(),function (data) {
                         if(data&&data!='fail'){
+                            // 跳转到登录页面之前页面的url
                             var originUrl = $("#originUrl").val();
-                            console.log("originUrl:"+originUrl);
+                            // console.log("originUrl:"+originUrl);
                             if(originUrl==''){
-                                window.location.href="http://www.jmall.com/"
+                                // 如果之前没有页面，那么就直接跳转到首页
+                                window.location.href="http://www.jmall.com/";
 								return ;
                             }
+                              // 做一个base64的编码
                               originUrl = decodeURIComponent(originUrl);
                             var idx=originUrl.indexOf('?');
 
@@ -111,6 +114,7 @@
                             }else{
                                 originUrl+='&'
                             }
+                            // data来自回调函数，就是我们的token的
                             window.location.href=originUrl+"newToken="+data;
                             return ;
                         }else{

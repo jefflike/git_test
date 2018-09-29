@@ -29,7 +29,7 @@ public class PassportController {
 
     @RequestMapping("index")
     public String index(HttpServletRequest request){
-        // 在url中获取这个字段作为登陆后页面的跳转
+        // 在url中获取这个字段作为登陆后页面的跳转，如果没有则后台直接给你调到首页
         String originUrl = request.getParameter("originUrl");
         request.setAttribute("originUrl", originUrl);
         return "index";
@@ -57,9 +57,10 @@ public class PassportController {
 
             // 使用工具类生成token
             String token = JwtUtil.encode(signKey, map, salt);
+//            return给ajax异步的回调函数，跳转回之前页面的时候需要附带一个newtoken信息
             return token;
         }else {
-            // 没有查询到，返回一个失败
+            // 没有查询到，返回一个失败，登录失败
             return "fail";
         }
     }

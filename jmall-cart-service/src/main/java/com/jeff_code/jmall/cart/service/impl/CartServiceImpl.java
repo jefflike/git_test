@@ -206,5 +206,17 @@ public class CartServiceImpl implements ICartService {
         jedis.close();
     }
 
+    public List<CartInfo> getCartCheckedList(String userId){
+        // 获得redis中的key
+        String userCheckedKey = CartConst.USER_KEY_PREFIX + userId + CartConst.USER_CHECKED_KEY_SUFFIX;
+        Jedis jedis = redisUtil.getJedis();
+        List<String> cartCheckedList = jedis.hvals(userCheckedKey);
+        List<CartInfo> newCartList = new ArrayList<>();
+        for (String cartJson : cartCheckedList) {
+            CartInfo cartInfo = JSON.parseObject(cartJson,CartInfo.class);
+            newCartList.add(cartInfo);
+        }
+        return newCartList;
+    }
 
 }

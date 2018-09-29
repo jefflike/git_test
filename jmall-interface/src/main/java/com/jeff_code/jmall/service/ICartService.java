@@ -32,4 +32,6 @@ public interface ICartService {
     List<CartInfo> mergeToCartList(List<CartInfo> cartListCK, String userId);
 
     void checkCart(String skuId, String isChecked, String userId);
+
+    List<CartInfo> getCartCheckedList(String userId);
 }
