@@ -43,6 +43,8 @@ public class CartServiceImpl implements ICartService {
 //        2. 存在 + num
         if(cartInfoExist != null){
             cartInfoExist.setSkuNum(cartInfoExist.getSkuNum() + skuNum);
+//            给info附上实时price，否则往redis中存的时候少一个skuPrice的值
+            cartInfoExist.setSkuPrice(cartInfoExist.getCartPrice());
             cartInfoMapper.updateByPrimaryKeySelective(cartInfoExist);
         }else {
             //        3. 不存在，则添加至购物车,CartInfo 对象中的数据从 skuInfo 得来
@@ -57,8 +59,9 @@ public class CartServiceImpl implements ICartService {
             cartInfo1.setImgUrl(skuInfo.getSkuDefaultImg());
             cartInfo1.setUserId(userId);
             cartInfo1.setSkuNum(skuNum);
-            cartInfoExist = cartInfo1;
 
+            cartInfoMapper.insertSelective(cartInfo1);
+            cartInfoExist = cartInfo1;
         }
 
 //        4. 最后，更新到redis
@@ -76,15 +79,13 @@ public class CartServiceImpl implements ICartService {
 
     @Override
     public List<CartInfo> getCartList(String userId) {
+        // 用户登录，从redis中取数据
         Jedis jedis = redisUtil.getJedis();
         // 购物车key user:userId:cart
         String userCartKey = CartConst.USER_KEY_PREFIX+userId+CartConst.USER_CART_KEY_SUFFIX;
 
-        // 取到所有的values，这里就是cartInfo的集合，但是需要序列化
+        // 取到所有的values，这里就是cartInfo的集合，但是需要序列化，因为购物车存的是hash，取出hvals就是所有的value，value就是{购物项}的string所以需要序列化
         List<String> cartJsons = jedis.hvals(userCartKey);
-        System.out.println(cartJsons);
-        Set<String> hkeys = jedis.hkeys(userCartKey);
-        System.out.println(hkeys);
         if(cartJsons != null && cartJsons.size() > 0){
             ArrayList<CartInfo> cartInfoList  = new ArrayList<>();
             for (String cartJson : cartJsons) {
@@ -92,6 +93,7 @@ public class CartServiceImpl implements ICartService {
                 cartInfoList.add(cartInfo);
             }
 
+            // 按照id大小进行排序，使用到外部比较器
             cartInfoList.sort(new Comparator<CartInfo>() {
                 @Override
                 public int compare(CartInfo o1, CartInfo o2) {

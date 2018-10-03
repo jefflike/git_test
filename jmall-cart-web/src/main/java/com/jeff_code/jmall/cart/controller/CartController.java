@@ -31,6 +31,12 @@ public class CartController {
     @Autowired
     private CartCookieHandler cartCookieHandler;
 
+    /**
+     * LoginRequire的目的就是为了获取userId，否则确定是否需要跳转登录页面
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping("addToCart")
     @LoginRequire(autoRedirect = false)
     public String addToCart(HttpServletRequest request, HttpServletResponse response){
