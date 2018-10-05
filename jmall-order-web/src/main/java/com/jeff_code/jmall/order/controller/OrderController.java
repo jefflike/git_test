@@ -68,6 +68,7 @@ public class OrderController {
         request.setAttribute("orderDetailList",orderDetailList);
         OrderInfo orderInfo=new OrderInfo();
         orderInfo.setOrderDetailList(orderDetailList);
+        // 在bean中计算总价，订单价格x订单数量
         orderInfo.sumTotalAmount();
         request.setAttribute("totalAmount",orderInfo.getTotalAmount());
 
@@ -81,7 +82,7 @@ public class OrderController {
         // 取得userId
         String userId = (String) request.getAttribute("userId");
 
-        // 校验 获取流水号
+        // 校验 获取流水号，防止表单的重复提交
         String tradeNo = request.getParameter("tradeNo");
         boolean result = iOrderService.checkTradeCode(userId, tradeNo);
         if (!result){
@@ -90,7 +91,7 @@ public class OrderController {
             return "tradeFail";
         }
 
-        // 校验库存 ： 每个订单都需要校验
+        // 校验库存 ： 每个订单项都需要校验
         List<OrderDetail> orderDetailList = orderInfo.getOrderDetailList();
         for (OrderDetail orderDetail : orderDetailList) {
             // 调用验库存
@@ -115,7 +116,7 @@ public class OrderController {
         iOrderService.delTradeCode(userId);
         // mysql --- 伪删除！
         // 支付的时候，需要根据orderId
-        return "redirect://payment.gmall.com/index?orderId="+orderId;
+        return "redirect://payment.jmall.com/index?orderId="+orderId;
     }
 
 }

@@ -170,7 +170,7 @@ public class CartServiceImpl implements ICartService {
         // 外层使用数据库
         for (CartInfo cartInfoDB : cartInfoList) {
             // 内层使用cookie
-            for (CartInfo cartInfoCK : cartInfoList) {
+            for (CartInfo cartInfoCK : cartListCK) {
                 // skuId ,isChecked = 1
                 if (cartInfoDB.getSkuId().equals(cartInfoCK.getSkuId())){
                     if ("1".equals(cartInfoCK.getIsChecked())){
