@@ -82,4 +82,16 @@ public class OrderServiceImpl implements IOrderService {
         }
     }
 
+    // 删除流水号
+    public void delTradeCode(String userId){
+        // 放入redis
+        Jedis jedis = redisUtil.getJedis();
+        // 定义key
+        String tradeNoKey="user:"+userId+":tradeCode";
+
+        jedis.del(tradeNoKey);
+
+        jedis.close();
+    }
+
 }

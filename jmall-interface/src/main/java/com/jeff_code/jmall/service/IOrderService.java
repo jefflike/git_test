@@ -12,8 +12,8 @@ public interface IOrderService {
     // 校验流水号
     boolean checkTradeCode(String userId, String tradeCodeNo);
 
-/*    // 删除流水号
-    void delTradeCode(String userId);*/
+   // 删除流水号
+    void delTradeCode(String userId);
 
     // 验库存接口
     boolean checkStock(String skuId, Integer skuNum);
