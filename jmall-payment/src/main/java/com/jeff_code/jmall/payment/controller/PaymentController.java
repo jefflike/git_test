@@ -158,4 +158,12 @@ public class PaymentController {
             return "fail";
         }
     }
+
+    @RequestMapping("sendPaymentResult")
+    @ResponseBody
+    public String sendPaymentResult(PaymentInfo paymentInfo,String result){
+        // 手动发送通知
+        iPaymentService.sendPaymentResult(paymentInfo,result);
+        return "success";
+    }
 }

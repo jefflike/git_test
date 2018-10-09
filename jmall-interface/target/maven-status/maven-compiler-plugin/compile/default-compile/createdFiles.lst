@@ -1,0 +1,6 @@
+com\jeff_code\jmall\service\ICartService.class
+com\jeff_code\jmall\service\IManageService.class
+com\jeff_code\jmall\service\IOrderService.class
+com\jeff_code\jmall\service\IPaymentService.class
+com\jeff_code\jmall\service\IUserInfoService.class
+com\jeff_code\jmall\service\IListService.class

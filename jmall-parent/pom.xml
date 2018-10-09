@@ -13,7 +13,6 @@
         <module>../jmall-common-util</module>
         <module>../jmall-service-util</module>
         <module>../jmall-web-util</module>
-        <!--<module>../jmall-order-web</module>-->
     </modules>
 
     <!--标注这是一个父项目 maven就三种jar，war和pom，pom就是父项目-->

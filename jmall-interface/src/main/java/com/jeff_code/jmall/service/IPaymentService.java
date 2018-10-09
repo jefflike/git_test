@@ -11,4 +11,8 @@ public interface IPaymentService {
     void updatePaymentInfo(PaymentInfo paymentInfo);
     // 根据out_trade_no更新
     void updatePaymentInfoByOutTradeNo(String out_trade_no, PaymentInfo paymentInfo);
+
+    // 发送支付成功的通知给订单
+    void sendPaymentResult(PaymentInfo paymentInfo,String result);
 }
+
