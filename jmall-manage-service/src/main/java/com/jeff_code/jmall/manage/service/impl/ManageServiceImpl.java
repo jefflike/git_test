@@ -7,6 +7,7 @@ import com.jeff_code.jmall.config.RedisUtil;
 import com.jeff_code.jmall.manage.constant.ManageConst;
 import com.jeff_code.jmall.manage.mapper.*;
 import com.jeff_code.jmall.service.IManageService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
@@ -377,4 +378,14 @@ public class ManageServiceImpl implements IManageService {
         return skuInfo;
     }
 
+    @Override
+    public List<BaseAttrInfo> getAttrList(List<String> attrValueIdList) {
+        // attrValueIdList 这是一个集合，我们要的 集合中的每一个值
+        // foreach:mybatis , 没有单个赋值效率高。
+        // SELECT * FROM base_attr_info ai INNER JOIN base_attr_value av ON ai.id = av.attr_id WHERE av.id IN (81,14,83)
+        String attrValueIds  = StringUtils.join(attrValueIdList.toArray(), ",");
+        // 将集合中的每一个数值放进去
+        List<BaseAttrInfo>  baseAttrInfoList =   baseAttrInfoMapper.selectAttrInfoListByIds(attrValueIds);
+        return baseAttrInfoList;
+    }
 }

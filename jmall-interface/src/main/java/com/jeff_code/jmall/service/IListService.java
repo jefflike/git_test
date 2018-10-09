@@ -15,4 +15,7 @@ public interface IListService {
 
     // 通过检索获取返回的es
     SkuLsResult search(SkuLsParams skuLsParams);
+
+    // 根据skuId 来更新商品的热度排名
+    void incrHotScore(String skuId);
 }

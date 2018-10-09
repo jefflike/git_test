@@ -43,4 +43,7 @@ public interface IManageService {
     List<SkuSaleAttrValue> getSkuSaleAttrValueListBySpu(String spuId);
 
     SkuInfo getSkuInfoDB(String skuId);
+
+    // 根据平台属性值id查询平台属性集合
+    List<BaseAttrInfo> getAttrList(List<String> attrValueIdList);
 }
