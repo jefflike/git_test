@@ -7,7 +7,7 @@ public interface IOrderService {
     String  saveOrder(OrderInfo orderInfo);
 
     // 获取流水号
-//    String getTradeNo(String userId);
+    String getTradeNo(String userId);
 
     // 校验流水号
     boolean checkTradeCode(String userId, String tradeCodeNo);
@@ -17,4 +17,7 @@ public interface IOrderService {
 
     // 验库存接口
     boolean checkStock(String skuId, Integer skuNum);
+
+    // 根据订单Id查订单信息
+    OrderInfo getOrderInfo(String orderId);
 }

@@ -1,4 +1,4 @@
-package com.jeff_code.jmall.order;
+package com.jeff_code.jmall.payment;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,10 +7,10 @@ import tk.mybatis.spring.annotation.MapperScan;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.jeff_code.jmall")
-@MapperScan(basePackages = "com.jeff_code.jmall.order.mapper")
-public class JmallOrderServiceApplication {
+@MapperScan(basePackages = "com.jeff_code.jmall.payment.mapper")
+public class JmallPaymentApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(JmallOrderServiceApplication.class, args);
+        SpringApplication.run(JmallPaymentApplication.class, args);
     }
 }

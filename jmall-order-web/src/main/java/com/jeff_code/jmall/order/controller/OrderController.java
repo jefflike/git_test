@@ -15,6 +15,7 @@ import com.jeff_code.jmall.service.IOrderService;
 import com.jeff_code.jmall.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,17 +47,21 @@ public class OrderController {
     }*/
 
     @RequestMapping("trade")
-    @LoginRequire
-    public String  trade(HttpServletRequest request){
+    @LoginRequire()
+    public String tarde(HttpServletRequest request, Model model){
+        // 获取用户Id
         String userId = (String) request.getAttribute("userId");
-        // 得到选中的购物车列表
-        List<CartInfo> cartCheckedList = iCartService.getCartCheckedList(userId);
-        // 收货人地址
+        // 送货清单地址
         List<UserAddress> userAddressList = iUserInfoService.getAdressById(userId);
-        request.setAttribute("userAddressList",userAddressList);
-        // 订单信息集合
-        List<OrderDetail> orderDetailList=new ArrayList<>(cartCheckedList.size());
+
+        // 送货清单：数据来源于 cartService
+        List<CartInfo> cartCheckedList =  iCartService.getCartCheckedList(userId);
+
+        // 创建一个OrderDetail 集合
+        ArrayList<OrderDetail> orderDetailList = new ArrayList<>();
+        // 应该给orderDetail 赋值
         for (CartInfo cartInfo : cartCheckedList) {
+            // 属性拷贝
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setSkuId(cartInfo.getSkuId());
             orderDetail.setSkuName(cartInfo.getSkuName());
@@ -65,13 +70,26 @@ public class OrderController {
             orderDetail.setOrderPrice(cartInfo.getCartPrice());
             orderDetailList.add(orderDetail);
         }
-        request.setAttribute("orderDetailList",orderDetailList);
-        OrderInfo orderInfo=new OrderInfo();
+
+
+        // 引出订单：
+        OrderInfo orderInfo = new OrderInfo();
+        // 将订单明细给主订单
         orderInfo.setOrderDetailList(orderDetailList);
-        // 在bean中计算总价，订单价格x订单数量
         orderInfo.sumTotalAmount();
+
+
+        // 保存一个totalAmount 表示订单总价 [订单中所有的商品明细]
         request.setAttribute("totalAmount",orderInfo.getTotalAmount());
 
+        // 保存orderDetail集合
+        request.setAttribute("orderDetailList",orderDetailList);
+
+        request.setAttribute("userAddressList",userAddressList);
+
+        // 获取流水号
+        String tradeNo = iOrderService.getTradeNo(userId);
+        request.setAttribute("tradeNo",tradeNo);
         return "trade";
     }
 

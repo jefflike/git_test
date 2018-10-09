@@ -4,12 +4,10 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.jeff_code.jmall.bean.SkuLsInfo;
 import com.jeff_code.jmall.bean.SkuLsParams;
 import com.jeff_code.jmall.bean.SkuLsResult;
+import com.jeff_code.jmall.config.RedisUtil;
 import com.jeff_code.jmall.service.IListService;
 import io.searchbox.client.JestClient;
-import io.searchbox.core.DocumentResult;
-import io.searchbox.core.Index;
-import io.searchbox.core.Search;
-import io.searchbox.core.SearchResult;
+import io.searchbox.core.*;
 import io.searchbox.core.search.aggregation.MetricAggregation;
 import io.searchbox.core.search.aggregation.TermsAggregation;
 import org.elasticsearch.index.query.BoolQueryBuilder;
@@ -22,6 +20,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +37,9 @@ public class ListServiceImpl implements IListService {
 
     @Autowired
     private JestClient jestClient;
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     // 保存的index ，type
     public static final String ES_INDEX="jmall";
@@ -179,6 +181,35 @@ public class ListServiceImpl implements IListService {
     }
 
 
+    @Override
+    public void incrHotScore(String skuId) {
+        // 取得redis
+        Jedis jedis = redisUtil.getJedis();
+        // 定义记录商品访问次数的key 每次访问的时候，需要将访问次数+1
+        Double score = jedis.zincrby("hotScore", 1, "skuId:" + skuId);
+        // 记录多少次来更新一次es
+        if (score%2==0){
+            // 更新es
+            updateHotScore(skuId,  Math.round(score));
+        }
+    }
+
+    private void updateHotScore(String skuId, long hotScore) {
+        // dsl 语句 更新语句
+        String query="{\n" +
+                "   \"doc\":{\n" +
+                "     \"hotScore\":"+hotScore+"\n" +
+                "   }\n" +
+                "}";
+        // 准备更新
+        Update update = new Update.Builder(query).index(ES_INDEX).type(ES_TYPE).id(skuId).build();
+        // 执行
+        try {
+            jestClient.execute(update);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

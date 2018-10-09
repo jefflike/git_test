@@ -6,6 +6,7 @@ import com.jeff_code.jmall.bean.SkuInfo;
 import com.jeff_code.jmall.bean.SkuSaleAttrValue;
 import com.jeff_code.jmall.bean.SpuSaleAttr;
 import com.jeff_code.jmall.config.LoginRequire;
+import com.jeff_code.jmall.service.IListService;
 import com.jeff_code.jmall.service.IManageService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,9 @@ import java.util.Map;
 public class ItemController {
     @Reference
     private IManageService iManageService;
+
+    @Reference
+    private IListService iListService;
 
     @RequestMapping("{skuId}.html")
 //    @LoginRequire
@@ -71,6 +75,8 @@ public class ItemController {
         System.out.println("valuesSkuJson" + valuesSkuJson);
         request.setAttribute("valuesSkuJson",valuesSkuJson);
 
+        // 调用商品热度排名
+        iListService.incrHotScore(skuId);
         return "item";
     }
 }

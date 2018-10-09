@@ -29,7 +29,7 @@ public class ListController {
     @RequestMapping("list.html")
     public String getList(SkuLsParams skuLsParams, HttpServletRequest request){
         // 设置分页大小
-        skuLsParams.setPageSize(3);
+        skuLsParams.setPageSize(1);
 
         // 第一个功能是动态生成dsl 语句 ，第二个功能是将dsl 语句查询出的结果封装SkuLsResult，包含高亮name，三级分类id，desc等
         SkuLsResult skuLsResult = iListService.search(skuLsParams);

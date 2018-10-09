@@ -11,10 +11,7 @@ import com.jeff_code.jmall.util.HttpClientUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import redis.clients.jedis.Jedis;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @Author: jefflike
@@ -32,7 +29,7 @@ public class OrderServiceImpl implements IOrderService {
     @Autowired
     private RedisUtil redisUtil;
 
-
+    @Override
     public String saveOrder(OrderInfo orderInfo) {
         // 设置创建时间
         orderInfo.setCreateTime(new Date());
@@ -54,6 +51,21 @@ public class OrderServiceImpl implements IOrderService {
 // 为了跳转到支付页面使用。支付会根据订单id进行支付。
         String orderId = orderInfo.getId();
         return orderId;
+    }
+
+    // 生成一个流水号：
+    public String getTradeNo(String userId){
+        // 生成号
+        String tradeCode = UUID.randomUUID().toString();
+        // 放入redis
+        Jedis jedis = redisUtil.getJedis();
+        // 定义key
+        String tradeNoKey="user:"+userId+":tradeCode";
+        //
+        jedis.setex(tradeNoKey,10*60,tradeCode);
+
+        jedis.close();
+        return tradeCode;
     }
 
     // 校验：页面提交到后台的流水号，跟redis 中的流水号进行校验
@@ -92,6 +104,11 @@ public class OrderServiceImpl implements IOrderService {
         jedis.del(tradeNoKey);
 
         jedis.close();
+    }
+
+    @Override
+    public OrderInfo getOrderInfo(String orderId) {
+        return orderInfoMapper.selectByPrimaryKey(orderId);
     }
 
 }
