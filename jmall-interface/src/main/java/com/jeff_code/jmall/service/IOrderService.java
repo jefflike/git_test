@@ -1,6 +1,7 @@
 package com.jeff_code.jmall.service;
 
 import com.jeff_code.jmall.bean.OrderInfo;
+import com.jeff_code.jmall.bean.enums.ProcessStatus;
 
 public interface IOrderService {
     // 保存订单方法的参数参数 orderInfo ,orderDetail
@@ -20,4 +21,9 @@ public interface IOrderService {
 
     // 根据订单Id查订单信息
     OrderInfo getOrderInfo(String orderId);
+
+    // 根据订单的Id 修改订单状态
+    void updateOrderStatus(String orderId, ProcessStatus paid);
+    // 发送通知给库存
+    void sendOrderStatus(String orderId);
 }
