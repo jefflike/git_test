@@ -1,5 +1,6 @@
 package com.jeff_code.jmall.order.service.impl;
 
+import com.alibaba.dubbo.config.annotation.Reference;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.alibaba.fastjson.JSON;
 import com.jeff_code.jmall.bean.OrderDetail;
@@ -10,13 +11,18 @@ import com.jeff_code.jmall.config.RedisUtil;
 import com.jeff_code.jmall.order.mapper.OrderDetailMapper;
 import com.jeff_code.jmall.order.mapper.OrderInfoMapper;
 import com.jeff_code.jmall.service.IOrderService;
+import com.jeff_code.jmall.service.IPaymentService;
 import com.jeff_code.jmall.util.HttpClientUtil;
 import org.apache.activemq.command.ActiveMQTextMessage;
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import redis.clients.jedis.Jedis;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.jms.*;
 import javax.jms.Queue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -37,6 +43,9 @@ public class OrderServiceImpl implements IOrderService {
 
     @Autowired
     private ActiveMQUtil activeMQUtil;
+
+    @Reference
+    private IPaymentService iPaymentService;
 
     @Override
     public String saveOrder(OrderInfo orderInfo) {
@@ -115,17 +124,22 @@ public class OrderServiceImpl implements IOrderService {
         jedis.close();
     }
 
+    /**
+     * 通过orderId查询orderinfo和orderdetail两张表，所有的订单以及所有订单商品的详情
+     * @param orderId
+     * @return
+     */
     @Override
     public OrderInfo getOrderInfo(String orderId) {
-        //        OrderInfo orderInfo = new OrderInfo();
-//        orderInfo.setId(orderId);
-//        orderInfoMapper.selectOne(orderInfo);
+//      OrderInfo orderInfo = new OrderInfo();
+//      orderInfo.setId(orderId);
+//      orderInfoMapper.selectOne(orderInfo);
         OrderInfo orderInfo = orderInfoMapper.selectByPrimaryKey(orderId);
-        // 根据orderId 查询订单详情
+        // 根据orderId 查询订单中所有商品的详情
         OrderDetail orderDetail = new OrderDetail();
         orderDetail.setOrderId(orderInfo.getId());
         List<OrderDetail> orderDetailList = orderDetailMapper.select(orderDetail);
-        // 添加到orderInfo 中
+        // 添加到orderInfo 中，List<OrderDetail> orderDetailList是原数据表中没有的部分
         orderInfo.setOrderDetailList(orderDetailList);
         return orderInfo;
     }
@@ -178,7 +192,7 @@ public class OrderServiceImpl implements IOrderService {
         return JSON.toJSONString(map);
     }
 
-    private Map initWareOrder(OrderInfo orderInfo) {
+    public Map initWareOrder(OrderInfo orderInfo) {
         // 创建map
         HashMap<String, Object> map = new HashMap<>();
         map.put("orderId",orderInfo.getId());
@@ -205,5 +219,79 @@ public class OrderServiceImpl implements IOrderService {
         }
         map.put("details",detailList);
         return map;
+    }
+
+    @Override
+    public List<OrderInfo> getExpiredOrderList() {
+        // 过期时间《当前时间
+        Example example = new Example(OrderInfo.class);
+        example.createCriteria().andEqualTo("processStatus",ProcessStatus.UNPAID).andLessThan("expireTime",new Date());
+        List<OrderInfo> orderInfos = orderInfoMapper.selectByExample(example);
+        return orderInfos;
+    }
+
+    @Override
+    @Async
+    public void execExpiredOrder(OrderInfo orderInfo) {
+        //  最重要的更新状态
+        updateOrderStatus(orderInfo.getId(),ProcessStatus.CLOSED);
+        //  处理一下paymentInfo 的状态也需要关闭。
+        iPaymentService.closePayment(orderInfo.getId());
+    }
+
+    @Override
+    public List<OrderInfo> splitOrder(String orderId, String wareSkuMap) {
+        List<OrderInfo> subOrderInfoList  = new ArrayList<>();
+        // 先通过orderId 查询到原始订单
+        OrderInfo orderInfoOrigin = getOrderInfo(orderId);
+        // wareSkuMap [{"wareId":"1","skuIds":["2","10"]},{"wareId":"2","skuIds":["3"]}]
+        List<Map> mapList = JSON.parseArray(wareSkuMap, Map.class);
+        // 循环当前的map集合
+        for (Map map : mapList) {
+            String wareId = (String) map.get("wareId");
+            List<String> skuIds = (List<String>) map.get("skuIds");
+            // 创建新的子订单对象
+            OrderInfo subOrderInfo  = new OrderInfo();
+            // 将原始订单的属性拷贝给新的子订单
+            try {
+                BeanUtils.copyProperties(subOrderInfo,orderInfoOrigin);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            // 防止子订单主键重复
+            subOrderInfo.setId(null);
+            // 设置父订单Id
+            subOrderInfo.setParentOrderId(orderInfoOrigin.getId());
+            // 赋值仓库Id
+            subOrderInfo.setWareId(wareId);
+
+            // 声明一个子订单集合
+            List<OrderDetail> subOrderDetailList = new ArrayList<>();
+            // 获取子订单明细
+            List<OrderDetail> orderDetailList = orderInfoOrigin.getOrderDetailList();
+            for (OrderDetail orderDetail : orderDetailList) {
+                // 循环skuIds
+                for (String skuId : skuIds) {
+                    if (skuId.equals(orderDetail.getSkuId())){
+                        orderDetail.setId(null);
+                        subOrderDetailList.add(orderDetail);
+                    }
+                }
+            }
+            // 给新的子订单赋值订单明细
+            subOrderInfo.setOrderDetailList(subOrderDetailList);
+            // 总价
+            subOrderInfo.sumTotalAmount();
+            // 保存新的子订单
+            saveOrder(subOrderInfo);
+            // 将新的子订单添加到集合中
+            subOrderInfoList.add(subOrderInfo);
+        }
+        // 将原始订单变为拆分
+        updateOrderStatus(orderId,ProcessStatus.SPLIT);
+
+        return subOrderInfoList;
     }
 }

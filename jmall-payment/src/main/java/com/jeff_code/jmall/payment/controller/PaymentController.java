@@ -37,6 +37,11 @@ public class PaymentController {
     @Autowired
     private AlipayClient alipayClient;
 
+    /**
+     * 支付页面，订单的订单号，订单总额，选择支付方式（我们这里提交走的是alipay/submit控制器）
+     * @param request
+     * @return
+     */
     @RequestMapping("index")
     public String index( HttpServletRequest request){
         // 获取orderId
@@ -50,15 +55,20 @@ public class PaymentController {
         return "index";
     }
 
+    /**
+     * 先将订单转换成支付，存放到支付的数据表中，再传递参数给支付宝网关生成二维码，开启延迟队列，防止回调信息未收到的不确定性
+     * 延迟队列就是为了解决消息队列异步回调的不确定性的，当延迟队列的延时很长时，会一直存在队列中，导致队列冗长
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "alipay/submit",method = RequestMethod.POST)
     @ResponseBody
     public String submitPayment( HttpServletRequest request,HttpServletResponse response){
-
+        // 上面传下来的orderId
         String orderId = request.getParameter("orderId");
-        // 保存交易记录 mysql -- payment_info
-        // 创建paymentInfo
+        // 保存交易记录 mysql -- payment_info，支付的商品详情都是来自订单信息
         PaymentInfo paymentInfo = new PaymentInfo();
-        // 数据来源：订单信息
         // 调用根据订单Id查询订单信息
         OrderInfo orderInfo = iOrderService.getOrderInfo(orderId);
 
@@ -67,14 +77,13 @@ public class PaymentController {
         paymentInfo.setPaymentStatus(PaymentStatus.UNPAID);
         paymentInfo.setCreateTime(new Date());
         paymentInfo.setTotalAmount(orderInfo.getTotalAmount());
-        // 测试信息 ： 订单明细的名称
+        // 测试信息：随意写的
         paymentInfo.setSubject("有钱随便买！");
+        // 直接存到数据库中
         iPaymentService.savyPaymentInfo(paymentInfo);
 
         // 生成一个二维码
-        // sdk 中已经有AlipayClient 工具类！
         // AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do", APP_ID, APP_PRIVATE_KEY, FORMAT, CHARSET, ALIPAY_PUBLIC_KEY, SIGN_TYPE); //获得初始化的AlipayClient
-        //
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();//创建API对应的request
         alipayRequest.setReturnUrl(AlipayConfig.return_payment_url);
         alipayRequest.setNotifyUrl(AlipayConfig.notify_payment_url);//在公共参数中设置回跳和通知地址
@@ -105,6 +114,8 @@ public class PaymentController {
             e.printStackTrace();
         }
         response.setContentType("text/html;charset=UTF-8");
+        // 生成延迟队列查询订单outTradeNo的支付状态，修改支付的状态
+        iPaymentService.sendDelayPaymentResult(paymentInfo.getOutTradeNo(),15,3);
         return form;
     }
 
@@ -114,12 +125,11 @@ public class PaymentController {
         return "redirect:"+AlipayConfig.return_order_url;
     }
 
-    // 异步回调 -- 业务逻辑。 支付宝，通过外网 -- [能访问internet]
+    // 异步回调
     @RequestMapping("callback/notify")
     @ResponseBody
     public String paymentNotify(@RequestParam Map<String,String> paramMap, HttpServletRequest request) throws AlipayApiException {
         // 将异步回调通知的参数封装到一个paramMap集合中
-
         boolean signVerified = AlipaySignature.rsaCheckV1(paramMap, AlipayConfig.alipay_public_key, "utf-8",AlipayConfig.sign_type); //调用SDK验证签名
         if(signVerified){
             //    TODO 验签成功后，按照支付结果异步通知中的描述，对支付结果中的业务内容进行二次校验，校验成功后在response中返回success并继续商户自身业务处理，校验失败返回failure
@@ -148,6 +158,9 @@ public class PaymentController {
 
                 iPaymentService.updatePaymentInfo(paymentInfo);
                 // paymentService.updatePaymentInfoByOutTradeNo(out_trade_no,paymentInfo);
+
+                // 发送通知给订单
+                iPaymentService.sendPaymentResult(paymentInfo,"success");
                 return "success";
             }else {
                 return "fail";

@@ -72,6 +72,7 @@
   <script type="text/javascript">
       $(function() {
           $("#paymentButton").click(function () {
+              //alipay/submit的控制器
               $("#paymentForm").attr("action","/"+$("input[type='radio']:checked").val()+"/submit")  ;
               $("#paymentForm").submit();
               console.log($("#paymentForm").html()) ;
