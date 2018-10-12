@@ -2,7 +2,10 @@ package com.jeff_code.jmall.order.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.alibaba.fastjson.JSON;
 import com.jeff_code.jmall.bean.CartInfo;
 import com.jeff_code.jmall.bean.OrderDetail;
 import com.jeff_code.jmall.bean.OrderInfo;
@@ -135,6 +138,22 @@ public class OrderController {
         // mysql --- 伪删除！
         // 支付的时候，需要根据orderId
         return "redirect://payment.jmall.com/index?orderId="+orderId;
+    }
+
+    @RequestMapping("orderSplit")
+    @ResponseBody
+    public String orderSplit(String orderId,String wareSkuMap,HttpServletRequest request){
+        // 声明一个集合接收 【调用服务层的方法得到子订单List<OrderInfo>】
+        List<OrderInfo> subOrderInfoList  =  iOrderService.splitOrder(orderId,wareSkuMap);
+        List<Map> wareMapList=new ArrayList<>();
+        // 遍历子订单集合返回字符串
+        for (OrderInfo orderInfo : subOrderInfoList) {
+            // orderInfo 主订单
+            Map map = iOrderService.initWareOrder(orderInfo);
+            // 将map 集合添加到一个list集合中
+            wareMapList.add(map);
+        }
+        return JSON.toJSONString(wareMapList);
     }
 
 }
